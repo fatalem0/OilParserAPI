@@ -1,9 +1,9 @@
 package services
 
+import data.CsvRecord
 import kantan.csv.ops.toCsvInputOps
 import kantan.csv.{CsvReader, HeaderDecoder, ReadResult, rfc}
-import services.PriceService.CsvRecord
-import utils.DateUtils.parseToLocalDate
+import utils.DateUtils.parseFromCsvToLocalDate
 
 import java.net.URL
 
@@ -28,8 +28,8 @@ object ParsingService {
     parsedCsv.collect {
       case Right(line) =>
         CsvRecord(
-          parseToLocalDate(line.startDate),
-          parseToLocalDate(line.endDate),
+          parseFromCsvToLocalDate(line.startDate),
+          parseFromCsvToLocalDate(line.endDate),
           line.averagePrice.replace(',', '.')
         )
     }.toSeq

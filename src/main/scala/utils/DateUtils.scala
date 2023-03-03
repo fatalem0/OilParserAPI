@@ -1,7 +1,10 @@
 package utils
 
+import exceptions.WrongDateFormat
+
 import java.text.SimpleDateFormat
 import java.time.LocalDate
+import scala.util.{Failure, Left, Success, Try}
 
 object DateUtils {
 
@@ -35,9 +38,9 @@ object DateUtils {
   }
 
   /**
-   * Converts the 'date' to a desired format
+   * Converts a date from a csv to a desired format. Let's imagine that the date is correct
    */
-  def parseToLocalDate(date: String): LocalDate = {
+  def parseFromCsvToLocalDate(date: String): LocalDate = {
     val formatter = new SimpleDateFormat("yyyy-MM-dd")
     val parser = new SimpleDateFormat("yy-MM-dd")
     val year = date.takeRight(2)
@@ -46,5 +49,14 @@ object DateUtils {
 
     LocalDate.parse(formatter.format(parser.parse(s"$year-$month-$day")))
   }
+
+  /**
+   * Converts a non-csv-date to a desired format
+   */
+  def parseRandomDateToLocalDate(date: String): Either[WrongDateFormat, LocalDate] =
+    Try(parseFromCsvToLocalDate(date)) match {
+      case Success(date) => Right(date)
+      case Failure(_) => Left(WrongDateFormat("Wrong date format. It must be in the 'dd.mmm.yy' format"))
+    }
 
 }
